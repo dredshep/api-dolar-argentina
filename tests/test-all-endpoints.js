@@ -135,8 +135,24 @@ function generateMarkdownReport(results) {
   markdown += `- Successful endpoints: ${successCount}\n`;
   markdown += `- Failed endpoints: ${failureCount}\n`;
   
-  markdown += '\n\n*Report generated on: ' + new Date().toISOString() + '*\n';
+  markdown += '\n\n*Report generated on: ' + getArgentinaDateTime() + '*\n';
   return markdown;
+}
+
+// Add a function to get Argentina date time
+function getArgentinaDateTime() {
+  const options = {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+  
+  return new Date().toLocaleString('es-AR', options) + ' (ART)';
 }
 
 // Run the tests

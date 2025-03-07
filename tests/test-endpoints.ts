@@ -66,8 +66,24 @@ function generateMarkdownReport(results: { endpoint: string; status: number; sta
     markdown += `| ${result.endpoint} | ${result.status} | ${result.statusText} |\n`;
   }
 
-  markdown += '\n\n*Report generated on: ' + new Date().toISOString() + '*\n';
+  markdown += '\n\n*Report generated on: ' + getArgentinaDateTime() + '*\n';
   return markdown;
+}
+
+// Add a function to get Argentina date time
+function getArgentinaDateTime(): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+  
+  return new Date().toLocaleString('es-AR', options) + ' (ART)';
 }
 
 // Main function

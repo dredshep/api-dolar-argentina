@@ -6,6 +6,25 @@ import { fetchDolarData } from "./api";
 // Load environment variables
 dotenv.config();
 
+/**
+ * Returns a formatted date string in Argentina timezone
+ * @returns Formatted date string with Argentina timezone indicator
+ */
+function getArgentinaDateTime(): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+  
+  return new Date().toLocaleString('es-AR', options) + ' (ART)';
+}
+
 // Check if BOT_TOKEN is defined
 if (!process.env.BOT_TOKEN) {
   console.error("BOT_TOKEN is not defined in .env file");
@@ -199,7 +218,7 @@ bot.command("all", async (ctx: Context) => {
         `Venta: $${dolarData.dolarbitcoin.venta._text}\n\n`;
     }
     
-    message += `🕒 Actualizado: ${new Date().toLocaleString('es-AR')}`;
+    message += `🕒 Actualizado: ${getArgentinaDateTime()}`;
     
     await ctx.reply(message, { parse_mode: "Markdown" });
   } catch (error) {
