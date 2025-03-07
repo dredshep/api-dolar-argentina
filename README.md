@@ -1,9 +1,40 @@
 # API Dolar Argentina
 
 Obtene las diferentes cotizaciones del dólar, euro, reservas, evolucion y riesgo pais.
+### Endpoints soportados
 
-## Endpoints
-URL: https://api-dolar-argentina.herokuapp.com/
+Debido a las limitaciones de la nueva fuente de datos, solo un subconjunto de endpoints están soportados:
+
+| Endpoint | Estado | Descripción |
+|----------|--------|-------------|
+| `/api/dolaroficial` | ✅ Soportado | Cotización dólar oficial |
+| `/api/dolarblue` | ✅ Soportado | Cotización dólar blue |
+| `/api/dolarbolsa` | ✅ Soportado | Cotización dólar bolsa |
+| `/api/dolarturista` | ✅ Soportado | Cotización dólar turista |
+| `/api/mayorista` | ✅ Soportado | Cotización dolar Mayorista |
+| `/api/all` | ⚠️ Parcial | Todos los valores disponibles (limitado a los tipos soportados) |
+
+### Endpoints no soportados
+
+Los siguientes endpoints **no están soportados** y devolverán un error 500:
+
+| Endpoint | Estado | Descripción |
+|----------|--------|-------------|
+| `/api/contadoliqui` | ❌ No soportado | Cotización dólar contado con liqui |
+| `/api/dolarpromedio` | ❌ No soportado | Cotización dólar promedio |
+| `/api/riesgopais` | ❌ No soportado | Valor riesgo pais |
+| Endpoints de bancos | ❌ No soportados | Cotizaciones específicas de bancos |
+| Endpoints de casas de cambio | ❌ No soportados | Cotizaciones de casas de cambio |
+| Endpoints de Euro y Real | ❌ No soportados | Cotizaciones de Euro y Real |
+| Endpoints de evolución | ❌ No soportados | Evolución mensual anualizada |
+| Endpoints de BCRA | ❌ No soportados | Reservas y circulante |
+
+Para más información sobre las limitaciones actuales y alternativas, consulta el archivo [API-COMPARISON.md](./docs/API-COMPARISON.md).
+
+## Endpoints originales
+URL Antigua: https://api-dolar-argentina.herokuapp.com/
+
+Toca correr en tu propia compu. Ninguna de las urls provistas en esta documentación puede servir ya que es una API antigua y he cambiado de API a otra cosa. Esta es para uso interno en mis bots. Si quieres APIs simplemente corre index.js y tendrás tus APIs. Cualquier duda, con ChatGPT o metes un Issue y lo leo cuando pueda.
 
 | Metodo | Endpoint | Descripcion |
 | ------ | ------ | ------ |
@@ -122,4 +153,10 @@ _Los endpoints de evolución devuelven la fecha y hora, y un array de meses con 
 _La informacion es obtenida del sitio DolarSi, por lo cual tambien se puede obtener mucha mas informacion._
 
 _Si encontras algun error o tenes alguna sugerencia, podes abrir un Issue o un Pull Request para contribuir._
+
+## Actualización de la fuente de datos
+
+**Nota importante:** La API original de DolarSi (`https://www.dolarsi.com/api/dolarSiInfo.xml`) ya no está disponible. Esta API ahora utiliza [DolarAPI.com](https://dolarapi.com/) como fuente de datos alternativa, pero con funcionalidad limitada.
+
+
 

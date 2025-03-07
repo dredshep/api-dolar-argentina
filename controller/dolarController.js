@@ -10,7 +10,7 @@ class dolarController {
      */
      getAllValues = async (req, res) => {
         try {
-            const data = await this.dolarSiService.getInfoDolar()            
+            const data = await this.dolarSiService.getInfoDolar(req)            
             const valores = { valores : data.cotiza }
             res.send(valores)
 
