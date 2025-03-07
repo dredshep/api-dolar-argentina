@@ -2,9 +2,13 @@ import { Bot, Context } from "grammy";
 import type { BotCommand } from "grammy/types";
 import dotenv from "dotenv";
 import { fetchDolarData } from "./api";
+import { initAnalytics, trackUser, trackCommand, generateReport, closeAnalytics } from "./analytics";
 
 // Load environment variables
 dotenv.config();
+
+// Check if running in development mode
+const isDevMode = process.env.DEV_MODE === 'true';
 
 /**
  * Returns a formatted date string in Argentina timezone
@@ -44,6 +48,7 @@ const commands: BotCommand[] = [
   { command: "dolarturista", description: "Cotización dólar turista" },
   { command: "mayorista", description: "Cotización dolar Mayorista" },
   { command: "all", description: "Todos los valores disponibles" },
+  { command: "stats", description: "Estadísticas del bot (solo admin)" },
 ];
 
 // Set bot commands
@@ -56,18 +61,33 @@ async function setupBot() {
   }
 }
 
+// Middleware to track all interactions
+bot.use(async (ctx, next) => {
+  await trackUser(ctx);
+  await next();
+});
+
 // Handle /start command
 bot.command("start", async (ctx: Context) => {
-  await ctx.reply(
-    "¡Bienvenido al Bot de API Dolar Argentina! 🇦🇷\n\n" +
+  await trackCommand(ctx, "start");
+  
+  let welcomeMessage = "¡Bienvenido al Bot de API Dolar Argentina! 🇦🇷\n\n" +
     "Este bot te permite consultar las diferentes cotizaciones del dólar en Argentina.\n\n" +
-    "Usa /help para ver los comandos disponibles."
-  );
+    "Usa /help para ver los comandos disponibles.";
+  
+  // Add development mode indicator if in dev mode
+  if (isDevMode && ctx.from && ctx.from.username === "bestulo") {
+    welcomeMessage += "\n\n⚠️ *MODO DESARROLLO* ⚠️";
+  }
+  
+  await ctx.reply(welcomeMessage, { parse_mode: "Markdown" });
 });
 
 // Handle /help command
 bot.command("help", async (ctx: Context) => {
+  await trackCommand(ctx, "help");
   const commandList = commands
+    .filter(cmd => cmd.command !== "stats") // Hide stats command from regular users
     .map((cmd) => `/${cmd.command} - ${cmd.description}`)
     .join("\n");
   
@@ -79,6 +99,7 @@ bot.command("help", async (ctx: Context) => {
 
 // Handle dolar oficial command
 bot.command("dolaroficial", async (ctx: Context) => {
+  await trackCommand(ctx, "dolaroficial");
   try {
     const data = await fetchDolarData("/api/dolaroficial");
     await ctx.reply(
@@ -96,6 +117,7 @@ bot.command("dolaroficial", async (ctx: Context) => {
 
 // Handle dolar blue command
 bot.command("dolarblue", async (ctx: Context) => {
+  await trackCommand(ctx, "dolarblue");
   try {
     const data = await fetchDolarData("/api/dolarblue");
     await ctx.reply(
@@ -113,6 +135,7 @@ bot.command("dolarblue", async (ctx: Context) => {
 
 // Handle dolar bolsa command
 bot.command("dolarbolsa", async (ctx: Context) => {
+  await trackCommand(ctx, "dolarbolsa");
   try {
     const data = await fetchDolarData("/api/dolarbolsa");
     await ctx.reply(
@@ -130,6 +153,7 @@ bot.command("dolarbolsa", async (ctx: Context) => {
 
 // Handle dolar turista command
 bot.command("dolarturista", async (ctx: Context) => {
+  await trackCommand(ctx, "dolarturista");
   try {
     const data = await fetchDolarData("/api/dolarturista");
     await ctx.reply(
@@ -147,6 +171,7 @@ bot.command("dolarturista", async (ctx: Context) => {
 
 // Handle mayorista command
 bot.command("mayorista", async (ctx: Context) => {
+  await trackCommand(ctx, "mayorista");
   try {
     const data = await fetchDolarData("/api/mayorista");
     await ctx.reply(
@@ -164,6 +189,7 @@ bot.command("mayorista", async (ctx: Context) => {
 
 // Handle all command
 bot.command("all", async (ctx: Context) => {
+  await trackCommand(ctx, "all");
   try {
     const allData = await fetchDolarData("/api/all");
     
@@ -227,6 +253,24 @@ bot.command("all", async (ctx: Context) => {
   }
 });
 
+// Handle stats command (admin only)
+bot.command("stats", async (ctx: Context) => {
+  await trackCommand(ctx, "stats");
+  // log message if dev mode
+  if (isDevMode) {
+    console.log({message: ctx.message, from: ctx.from})
+  }
+  // Only allow the admin (bestulo) to access stats
+  if (ctx.from && ctx.from.username?.toLocaleLowerCase() === "bestulo") {
+    
+        
+    const report = await generateReport();
+    await ctx.reply(report, { parse_mode: "Markdown" });
+  } else {
+    await ctx.reply("⛔ No tienes permiso para acceder a esta información.");
+  }
+});
+
 // Handle unknown commands
 bot.on("message", async (ctx: Context) => {
   if (ctx.message && 'text' in ctx.message && ctx.message.text && ctx.message.text.startsWith("/")) {
@@ -238,13 +282,34 @@ bot.on("message", async (ctx: Context) => {
 
 // Start the bot
 async function startBot() {
+  // Initialize analytics
+  await initAnalytics();
+  
   await setupBot();
   
   // Start the bot with long polling
   bot.start({
     onStart: (botInfo) => {
-      console.log(`Bot @${botInfo.username} started successfully!`);
+      if (isDevMode) {
+        console.log(`🧪 DEVELOPMENT MODE 🧪`);
+        console.log(`Bot @${botInfo.username} started in DEVELOPMENT mode!`);
+      } else {
+        console.log(`Bot @${botInfo.username} started successfully!`);
+      }
     },
+  });
+  
+  // Handle process termination
+  process.on('SIGINT', async () => {
+    console.log('Closing analytics database...');
+    await closeAnalytics();
+    process.exit(0);
+  });
+  
+  process.on('SIGTERM', async () => {
+    console.log('Closing analytics database...');
+    await closeAnalytics();
+    process.exit(0);
   });
 }
 

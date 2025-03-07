@@ -147,4 +147,32 @@ Este bot utiliza una integración directa con la API Dolar Argentina, importando
 
 ### Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles. 
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
+
+## Development Mode
+
+For development purposes, you can use a separate development bot token. This helps to avoid conflicts with the production bot.
+
+### Setup
+
+1. Create a `.env.development` file in the bot directory
+2. Add your development bot token:
+   ```
+   BOT_TOKEN=your_development_bot_token_here
+   DEV_MODE=true
+   ```
+
+### Running in Development Mode
+
+To run the bot in development mode:
+
+```bash
+bun run dev-token
+```
+
+When running in development mode:
+- The console will display "DEVELOPMENT MODE" indicators
+- The bot will show a development mode warning in the welcome message (only to the admin user)
+- Analytics data will be stored separately from production data
+
+This allows you to test new features without affecting the production bot. 
