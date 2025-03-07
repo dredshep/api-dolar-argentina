@@ -1,2 +1,9 @@
 node_modules
 *.http
+bot/.env
+bot/logs
+bot/dist
+bot/logs
+bot/node_modules
+bot/package-lock.json
+bot/package.json
