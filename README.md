@@ -35,6 +35,10 @@ Para más información sobre las limitaciones actuales y alternativas, consulta 
 
 Para instrucciones sobre cómo desplegar esta API en un servidor Ubuntu usando PM2, consulta la [Guía de Despliegue](./docs/DEPLOYMENT.md).
 
+## Bot de Telegram
+
+Este proyecto incluye un bot de Telegram que permite consultar las cotizaciones del dólar directamente desde Telegram. Para más información, consulta el [README del bot](./bot/README.md).
+
 ## Endpoints originales
 URL Antigua: https://api-dolar-argentina.herokuapp.com/
 
