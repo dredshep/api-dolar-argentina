@@ -5,7 +5,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "lint": "eslint \"./**/*.js\""
+    "lint": "eslint \"./**/*.js\"",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop api-dolar-argentina",
+    "pm2:restart": "pm2 restart api-dolar-argentina",
+    "pm2:status": "pm2 status api-dolar-argentina",
+    "pm2:logs": "pm2 logs api-dolar-argentina",
+    "pm2:delete": "pm2 delete api-dolar-argentina"
   },
   "keywords": [],
   "author": "",

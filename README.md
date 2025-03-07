@@ -31,6 +31,10 @@ Los siguientes endpoints **no están soportados** y devolverán un error 500:
 
 Para más información sobre las limitaciones actuales y alternativas, consulta el archivo [API-COMPARISON.md](./docs/API-COMPARISON.md).
 
+## Despliegue
+
+Para instrucciones sobre cómo desplegar esta API en un servidor Ubuntu usando PM2, consulta la [Guía de Despliegue](./docs/DEPLOYMENT.md).
+
 ## Endpoints originales
 URL Antigua: https://api-dolar-argentina.herokuapp.com/
 
